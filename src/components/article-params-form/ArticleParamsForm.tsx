@@ -119,8 +119,18 @@ export const ArticleParamsForm = ({
 						onChange={handleChangeContentWidth}
 					/>
 					<div className={styles.bottomContainer}>
-						<Button title='Сбросить' type='clear' onClick={resetStyles} />
-						<Button title='Применить' type='apply' onClick={applyStyles} />
+						<Button
+							title='Сбросить'
+							htmlType='reset'
+							type='clear'
+							onClick={resetStyles}
+						/>
+						<Button
+							title='Применить'
+							htmlType='submit'
+							type='apply'
+							onClick={applyStyles}
+						/>
 					</div>
 				</form>
 			</aside>
