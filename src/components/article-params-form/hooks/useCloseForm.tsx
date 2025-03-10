@@ -1,12 +1,16 @@
 import { useEffect } from 'react';
 
-type UseToggleForm = {
+type UseToggleFormType = {
 	isOpen: boolean;
 	onClose?: () => void;
 	rootRef: React.RefObject<HTMLElement>;
 };
 
-export const useCloseForm = ({ isOpen, onClose, rootRef }: UseToggleForm) => {
+export const useCloseForm = ({
+	isOpen,
+	onClose,
+	rootRef,
+}: UseToggleFormType) => {
 	useEffect(() => {
 		const handleByEsc = (event: KeyboardEvent) => {
 			if (event.key === 'Escape' && onClose) {
