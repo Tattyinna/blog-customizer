@@ -12,9 +12,11 @@ export const useCloseForm = ({
 	rootRef,
 }: UseToggleFormType) => {
 	useEffect(() => {
+		if (!isOpen) return;
+
 		const handleByEsc = (event: KeyboardEvent) => {
 			if (event.key === 'Escape' && onClose) {
-				isOpen && onClose();
+				onClose();
 			}
 		};
 
@@ -25,7 +27,7 @@ export const useCloseForm = ({
 				!rootRef.current?.contains(target) &&
 				onClose
 			) {
-				isOpen && onClose();
+				onClose();
 			}
 		};
 
@@ -36,5 +38,5 @@ export const useCloseForm = ({
 			window.removeEventListener('keydown', handleByEsc);
 			window.removeEventListener('mousedown', handleByClick);
 		};
-	}, [isOpen, onClose]);
+	}, [isOpen, onClose, rootRef]);
 };

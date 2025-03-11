@@ -22,68 +22,81 @@ import {
 } from 'src/constants/articleProps';
 
 type ArticleParamsFormProps = {
-	state: typeof defaultArticleState;
-	setState: React.Dispatch<React.SetStateAction<typeof defaultArticleState>>;
-	resetStyles: () => void;
-	applyStyles: () => void;
+	articleState: typeof defaultArticleState;
+	setArticleState: React.Dispatch<
+		React.SetStateAction<typeof defaultArticleState>
+	>;
 };
 
 export const ArticleParamsForm = ({
-	state,
-	setState,
-	resetStyles,
-	applyStyles,
+	articleState,
+	setArticleState,
 }: ArticleParamsFormProps) => {
-	const [isOpen, setOpen] = useState(false);
+	const [isMenuOpen, setIsMenuOpen] = useState(false);
+	const [formState, setFormState] = useState(articleState);
+
+	const resetFormState = () => {
+		setFormState(defaultArticleState);
+		setArticleState(defaultArticleState);
+	};
+
+	const applyState = () => {
+		setArticleState(formState);
+	};
 
 	const toggleOpen = () => {
-		setOpen((prevOpen) => !prevOpen);
+		setIsMenuOpen((prevOpen) => !prevOpen);
 	};
 
 	const handleChangeFontFamily = (value: OptionType) => {
-		setState({ ...state, fontFamilyOption: value });
+		setFormState({ ...formState, fontFamilyOption: value });
 	};
 
 	const handleChangeFontSize = (value: OptionType) => {
-		setState({ ...state, fontSizeOption: value });
+		setFormState({ ...formState, fontSizeOption: value });
 	};
 
 	const handleChangeFontColor = (value: OptionType) => {
-		setState({ ...state, fontColor: value });
+		setFormState({ ...formState, fontColor: value });
 	};
 
 	const handleChangeBackgroundColor = (value: OptionType) => {
-		setState({ ...state, backgroundColor: value });
+		setFormState({ ...formState, backgroundColor: value });
 	};
 
 	const handleChangeContentWidth = (value: OptionType) => {
-		setState({ ...state, contentWidth: value });
+		setFormState({ ...formState, contentWidth: value });
 	};
 
 	const formRef = useRef<HTMLFormElement | null>(null);
 
 	useCloseForm({
-		isOpen: isOpen,
+		isOpen: isMenuOpen,
 		onClose: toggleOpen,
 		rootRef: formRef,
 	});
 
+	const handleSubmitForm = (e: FormEvent) => {
+		e.preventDefault();
+		applyState();
+	};
+
 	return (
 		<>
-			<ArrowButton onClick={() => !isOpen && toggleOpen()} isOpen={isOpen} />
+			<ArrowButton
+				onClick={() => !isMenuOpen && toggleOpen()}
+				isOpen={isMenuOpen}
+			/>
 			<aside
 				className={clsx(styles.container, {
-					[styles.container_open]: isOpen,
+					[styles.container_open]: isMenuOpen,
 				})}>
-				<form
-					className={styles.form}
-					ref={formRef}
-					onSubmit={(e: FormEvent) => e.preventDefault()}>
+				<form className={styles.form} ref={formRef} onSubmit={handleSubmitForm}>
 					<Text as={'h2'} size={31} weight={800} uppercase={true}>
 						Задайте параметры
 					</Text>
 					<Select
-						selected={state.fontFamilyOption}
+						selected={formState.fontFamilyOption}
 						options={fontFamilyOptions}
 						placeholder='Выберите шрифт'
 						title='Шрифт'
@@ -92,12 +105,12 @@ export const ArticleParamsForm = ({
 					<RadioGroup
 						name='fontSize'
 						options={fontSizeOptions}
-						selected={state.fontSizeOption}
+						selected={formState.fontSizeOption}
 						title='Размер шрифта'
 						onChange={handleChangeFontSize}
 					/>
 					<Select
-						selected={state.fontColor}
+						selected={formState.fontColor}
 						options={fontColors}
 						placeholder='Выберите цвет'
 						title='Цвет шрифта'
@@ -105,14 +118,14 @@ export const ArticleParamsForm = ({
 					/>
 					<Separator />
 					<Select
-						selected={state.backgroundColor}
+						selected={formState.backgroundColor}
 						options={backgroundColors}
 						placeholder='Выберите цвет'
 						title='Цвет фона'
 						onChange={handleChangeBackgroundColor}
 					/>
 					<Select
-						selected={state.contentWidth}
+						selected={formState.contentWidth}
 						options={contentWidthArr}
 						placeholder='Выберите ширину'
 						title='Ширина контента'
@@ -123,14 +136,9 @@ export const ArticleParamsForm = ({
 							title='Сбросить'
 							htmlType='reset'
 							type='clear'
-							onClick={resetStyles}
+							onClick={resetFormState}
 						/>
-						<Button
-							title='Применить'
-							htmlType='submit'
-							type='apply'
-							onClick={applyStyles}
-						/>
+						<Button title='Применить' htmlType='submit' type='apply' />
 					</div>
 				</form>
 			</aside>
